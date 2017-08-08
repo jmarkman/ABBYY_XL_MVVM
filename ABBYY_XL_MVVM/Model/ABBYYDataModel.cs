@@ -10,7 +10,7 @@ namespace ABBYY_XL_MVVM.Model
         private DataTable _abbyyData; // Data associated with the submission
 
         /// <summary>
-        /// Getter/Setter for Control Number, fires OnPropertyChanged for MVVM data binding
+        /// The control number of the submission to search for
         /// </summary>
         public string ControlNumber
         {
@@ -23,7 +23,7 @@ namespace ABBYY_XL_MVVM.Model
         }
 
         /// <summary>
-        /// Getter/Setter for ABBYY data, fires OnPropertyChanged for MVVM data binding
+        /// The data associated with the provided control number
         /// </summary>
         public DataTable ABBYYData
         {
@@ -35,8 +35,14 @@ namespace ABBYY_XL_MVVM.Model
             }
         }
 
-        public void FillGrid()
+        /// <summary>
+        /// Queries the WKFC ABBYY database and uses SqlDataAdapter to fill ABBYYData (a DataTable object)
+        /// </summary>
+        public void FillABBYYDataGrid()
         {
+            if (ControlNumber == null || ControlNumber == "")
+                return;
+
             // Stored ABBYY SQL connection string in settings file
             string conn = Properties.Resources.ConnectString;
             // Calls stored procedure

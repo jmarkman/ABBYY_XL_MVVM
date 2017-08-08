@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABBYY_XL_MVVM", "ABBYY_XL_MVVM\ABBYY_XL_MVVM.csproj", "{0141C2C7-E8F2-4EF4-BDAC-C06F19CAA56F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABBYYXL_UnitTest", "ABBYYXL_UnitTest\ABBYYXL_UnitTest.csproj", "{6F98F578-7FAE-473E-BBEB-1C9F4EEB4164}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{0141C2C7-E8F2-4EF4-BDAC-C06F19CAA56F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0141C2C7-E8F2-4EF4-BDAC-C06F19CAA56F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0141C2C7-E8F2-4EF4-BDAC-C06F19CAA56F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F98F578-7FAE-473E-BBEB-1C9F4EEB4164}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F98F578-7FAE-473E-BBEB-1C9F4EEB4164}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F98F578-7FAE-473E-BBEB-1C9F4EEB4164}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F98F578-7FAE-473E-BBEB-1C9F4EEB4164}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

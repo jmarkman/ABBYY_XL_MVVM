@@ -5,27 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ABBYY_XL_MVVM"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="1025">
+        Title="ABBYY-XL" Icon="F:\Programming\Work\OfficeLikeIcons\16x16\report.png" Height="350" Width="1025">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="75"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="40"/>
         </Grid.ColumnDefinitions>
 
         <DataGrid x:Name="SearchResults"
                   Grid.Column="0"
                   Grid.Row="1"
-                  Grid.ColumnSpan="5"
+                  Grid.ColumnSpan="10"
                   IsReadOnly="True"
-                  ItemsSource="{Binding AppData.ABBYYData}"/>
+                  ItemsSource="{Binding AppData.ABBYYData, Mode=TwoWay}"
+                  FrozenColumnCount="2"/>
 
         <TextBlock x:Name="CtrlNumLbl"
                    Grid.Column="0"
@@ -44,15 +46,34 @@
                  KeyDown="CtrlNumInput_KeyDown"
                  Text="{Binding AppData.ControlNumber, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <Button x:Name="Edit"
+        <Button x:Name="Search"
                 Grid.Row="0"
-                Grid.Column="3"
-                Click="Edit_Click"
-                Content="Edit"/>
+                Grid.Column="2"
+                Content="Search" 
+                Click="Search_Click"/>
 
-        <Button x:Name="Export" 
-                Grid.Row="0"
-                Grid.Column="4"
-                Content="Export"/>
+        <StackPanel x:Name="ToolbarStackPanel" Orientation="Horizontal" Grid.Row="0" Grid.Column="4">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="0,0,5,0"/>
+                </Style>
+            </StackPanel.Resources>
+            <Button x:Name="Edit" Click="Edit_Click" Background="White" BorderBrush="White">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="F:\Programming\Work\OfficeLikeIcons\16x16\pencil.png"/>
+                    <TextBlock Text="Edit" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="3 0 0 0"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="Export" Background="White" BorderBrush="White" Click="Export_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="F:\Programming\Work\OfficeLikeIcons\16x16\export_excel.png"/>
+                    <TextBlock Text="Export" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="3 0 0 0"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+        <Button x:Name="About" Grid.Column="5" Grid.Row="0" Width="20" HorizontalAlignment="Right" Click="About_Click">
+            <Image Source="F:\Programming\Work\OfficeLikeIcons\16x16\help.png"/>
+        </Button>
     </Grid>
 </Window>
