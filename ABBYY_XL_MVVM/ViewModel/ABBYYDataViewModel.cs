@@ -70,6 +70,7 @@ namespace ABBYY_XL_MVVM.ViewModel
                 allRows.Add(currentRow);
             }
 
+            // Create excel file for results, and if that file already exists, delete it and remake it
             FileInfo excelFile = new FileInfo(userDesktop + $"Control Number [{AppData.ControlNumber}] ({dateToday})");
             if (excelFile.Exists)
             {
@@ -79,18 +80,24 @@ namespace ABBYY_XL_MVVM.ViewModel
 
             using (ExcelPackage pkg = new ExcelPackage())
             {
+                // The header row is all of the WKFC headers for the workstation
+                // dataRowStart denotes the row right after the header
+                // Most likely something that can be changed/refactored?
                 int headerRow = 1;
                 int dataRowStart = 2;
 
+                // Make a new worksheet in the excel workbook and make sure we're using that sheet
                 pkg.Workbook.Worksheets.Add("ABBYY Results");
                 ExcelWorksheet sheet = pkg.Workbook.Worksheets[1];
                 sheet.Name = "ABBYY Results";
 
+                // Write the headers to the excel sheet
                 for (int i = 0; i < headers.Length; i++)
                 {
                     sheet.Cells[headerRow, i + 1].Value = headers[i];
                 }
 
+                // Write the actual data gleaned from the DataGrid and save it 
                 foreach (var row in allRows)
                 {
                     for (int rowIndex = 0; rowIndex < row.RowLength; rowIndex++)
