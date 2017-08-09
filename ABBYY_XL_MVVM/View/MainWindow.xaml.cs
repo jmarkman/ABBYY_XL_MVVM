@@ -37,7 +37,7 @@ namespace ABBYY_XL_MVVM
         {
             if (e.Key == Key.Enter)
             {
-                _viewModel.FillGrid();
+                _viewModel.FillABBYYDataGrid();
             }
         }
 
@@ -61,7 +61,7 @@ namespace ABBYY_XL_MVVM
         /// </summary>
         private void Search_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel.FillGrid();
+            _viewModel.FillABBYYDataGrid();
         }
 
         /// <summary>
