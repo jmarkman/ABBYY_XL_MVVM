@@ -72,7 +72,6 @@ namespace ABBYY_XL_MVVM
             MessageBox.Show("ABBYY-XL for WKFC Underwriting Managers\n\nDeveloped by Alfred Long and Jonathan Markman\nIcons provided by Fatcow Web Hosting (https://www.fatcow.com/free-icons)", "About ABBYY-XL");
         }
 
-
         /// <summary>
         /// Exports the current datagrid as an Excel document
         /// </summary>

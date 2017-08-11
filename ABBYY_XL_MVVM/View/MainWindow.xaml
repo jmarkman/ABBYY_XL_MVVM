@@ -26,8 +26,11 @@
                   Grid.Row="1"
                   Grid.ColumnSpan="10"
                   IsReadOnly="True"
-                  ItemsSource="{Binding AppData.ABBYYData, Mode=TwoWay}"
-                  FrozenColumnCount="2"/>
+                  ItemsSource="{Binding ABBYYAppData.ABBYYData, Mode=TwoWay}"
+                  FrozenColumnCount="2" 
+                  CurrentCell="{Binding ABBYYAppData.CellInfo, Mode=TwoWay}"
+                  SelectionUnit="CellOrRowHeader" 
+                  CanUserReorderColumns="False"/>
 
         <TextBlock x:Name="CtrlNumLbl"
                    Grid.Column="0"
@@ -44,7 +47,7 @@
                  MaxLength="7"
                  MaxLines="1"
                  KeyDown="CtrlNumInput_KeyDown"
-                 Text="{Binding AppData.ControlNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{Binding Path=ABBYYAppData.ControlNumber, UpdateSourceTrigger=PropertyChanged}"/>
 
         <Button x:Name="Search"
                 Grid.Row="0"

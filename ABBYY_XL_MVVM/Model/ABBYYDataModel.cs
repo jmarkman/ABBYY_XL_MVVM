@@ -6,6 +6,8 @@ using OfficeOpenXml;
 using ABBYY_XL_MVVM.Components;
 using System.Collections.Generic;
 using System;
+using System.Windows.Controls;
+using System.Windows; // MessageBox for debug purposes, remove when ready to go forward
 
 namespace ABBYY_XL_MVVM.Model
 {
@@ -14,6 +16,7 @@ namespace ABBYY_XL_MVVM.Model
         private string _controlNumber; // Control Number of the submission
         private DataTable _abbyyData; // Data associated with the submission
         // These are all the private variables needed to export the results to an Excel spreadsheet
+        // WKFC workstation headers
         private readonly string[] headers =
         {
             "Loc #", "Bldg #", "Physical Building #", "Single Physical Building #",
@@ -28,6 +31,7 @@ namespace ABBYY_XL_MVVM.Model
         };
         private readonly string userDesktop = $@"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}";
         private readonly string dateToday = DateTime.Now.ToString("MM-dd-yyyy");
+        private DataGridCellInfo _cellInfo;
 
         /// <summary>
         /// The control number of the submission to search for
@@ -52,6 +56,18 @@ namespace ABBYY_XL_MVVM.Model
             {
                 _abbyyData = value;
                 OnPropertyChanged(nameof(ABBYYData));
+            }
+        }
+
+        public DataGridCellInfo CellInfo
+        {
+            get { return _cellInfo; }
+            set
+            {
+                _cellInfo = value;
+                OnPropertyChanged(nameof(CellInfo));
+                // Debug to see if it works
+                MessageBox.Show($"Col Index: {_cellInfo.Column.DisplayIndex.ToString()}");
             }
         }
 
@@ -86,18 +102,17 @@ namespace ABBYY_XL_MVVM.Model
         public void ExportABBYYDataGrid()
         {
             // Layer of abstraction so I don't have to refer to ABBYYAppData.ABBYYData every time
-            DataTable data = ABBYYData;
-            if (data == null)
+            if (ABBYYData == null)
                 return;
 
             // Create a list of rows and declare a variable to hold a singular row
             List<WorkstationRow> allRows = new List<WorkstationRow>();
             WorkstationRow currentRow;
             // Nested foreach to iterate through each row and store each cell in a WorkstationRow
-            foreach (DataRow row in data.Rows)
+            foreach (DataRow row in ABBYYData.Rows)
             {
                 currentRow = new WorkstationRow();
-                foreach (DataColumn column in data.Columns)
+                foreach (DataColumn column in ABBYYData.Columns)
                 {
                     string currentCell = row[column].ToString();
                     currentRow.Add(currentCell);

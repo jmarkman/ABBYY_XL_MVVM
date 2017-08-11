@@ -1,7 +1,4 @@
-﻿using System;
-using ABBYY_XL_MVVM.Model;
-
-
+﻿using ABBYY_XL_MVVM.Model;
 
 namespace ABBYY_XL_MVVM.ViewModel
 {
@@ -20,7 +17,7 @@ namespace ABBYY_XL_MVVM.ViewModel
         {
             ABBYYAppData = new ABBYYDataModel();
         }
-
+        
         // Access the FillABBYYDataGrid method within the Model to acquire the data and pass it to the View
         public void FillABBYYDataGrid()
         {

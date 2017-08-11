@@ -22,5 +22,16 @@ namespace ABBYYXL_UnitTest
             testModel.ControlNumber = "";
             testModel.FillABBYYDataGrid();
         }
+
+        [TestMethod]
+        public void TestFillABBYYDataGrid()
+        {
+            ABBYYDataModel model = new ABBYYDataModel();
+            model.ControlNumber = "1191167";
+            model.FillABBYYDataGrid();
+            var row = model.ABBYYData.Rows;
+            var col = model.ABBYYData.Columns;
+            Assert.AreEqual("Farm to Market Road 482", row[0][col[4]]);
+        }
     }
 }
