@@ -6,6 +6,9 @@ using OfficeOpenXml;
 using ABBYY_XL_MVVM.Components;
 using System.Collections.Generic;
 using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Globalization;
 using System.Windows.Controls;
 using System.Windows; // MessageBox for debug purposes, remove when ready to go forward
 
@@ -160,6 +163,68 @@ namespace ABBYY_XL_MVVM.Model
                 Byte[] sheetAsBinary = pkg.GetAsByteArray();
                 File.WriteAllBytes(Path.Combine(userDesktop, excelBookName), sheetAsBinary);
             }
+        }
+
+        /// <summary>
+        /// Writes out common address abbreviations in their full form.
+        /// </summary>
+        // TODO: Test that the shorthand method behaves the way I think it will. 
+        public void ExpandShorthand()
+        {
+            // Establish dictionary of shorthand keys and their expanded values
+            Dictionary<string, string> shorthand = new Dictionary<string, string>()
+            {
+                { "ave", "Avenue" }, { "ave.", "Avenue" }, { "ave,", "Avenue," },
+                { "blvd", "Boulevard" }, { "blvd.", "Boulevard" }, { "blvd,", "Boulevard," },
+                { "blvd.,", "Boulevard,"}, { "rd", "Road" }, { "rd.", "Road" }, { "rd,", "Road," },
+                { "rd.,", "Road,"}, { "dr", "Drive" }, { "dr.", "Drive" }, { "dr,", "Drive," },
+                { "dr.,", "Drive,"}, { "ln", "Lane" }, { "ln.", "Lane" }, { "ln,", "Lane," },
+                { "ln.,", "Lane,"}
+            };
+            // Create a new instance of the TextInfo class, which is a child class of CultureInfo.
+            // This class instance will allow us to use the ToTitleCase method below.
+            TextInfo txt = new CultureInfo("en-US", false).TextInfo;
+            // Take the address, make it lowercase for identification, split the address up by spaces, and place the pieces in a list
+            foreach (DataRow item in ABBYYData.Rows)
+            {
+                // Take the address, make it lowercase for identification, split the address up by spaces, and place the pieces in a list
+                List<string> splitAddress = item["Street 1"].ToString().ToLower().Split(' ').ToList();
+                foreach (var kvp in shorthand)
+                {
+                    // If the shorthand from the dictionary exists in the address part list
+                    if (splitAddress.Contains(kvp.Key)) 
+                    {
+                        // Find it and update it
+                        int pieceLocation = splitAddress.IndexOf(kvp.Key);
+                        splitAddress[pieceLocation] = kvp.Value;
+                    }
+                    item["Street 1"] = txt.ToTitleCase(string.Join(" ", splitAddress));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Expands the abbreviations for cardinal directions into their proper word form
+        /// </summary>
+        // TODO: Implement the cardinal direction method and test it
+        public void ExpandCardinalDirection()
+        {
+            /*
+             * Implementation:
+             * 
+             * For each row in the datatable
+             *  For each cardinal direction
+             *   If the text (converted to lowercase) in the Street 1 cell contains a full cardinal direction
+             *    The method doesn't need to do anything (set needsExpansion to false)
+             *    
+             * If !needsExpansion
+             *  return
+             * Else
+             *  Using regex, find the singular letter used to represent the cardinal direction
+             *  If the match is successful
+             *   Based on a switch statement that determines if the letter is at the end of the string or within
+             *   replace the letter with the full word
+             */ 
         }
 
         // Implementation of INotifyPropertyChanged interface
