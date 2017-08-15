@@ -18,7 +18,10 @@ namespace ABBYY_XL_MVVM.Model
     {
         private string _controlNumber; // Control Number of the submission
         private DataTable _abbyyData; // Data associated with the submission
-        // These are all the private variables needed to export the results to an Excel spreadsheet
+        // I have this to try to get the cell row/col index on click for PPC lookup on a singular location
+        // Possible that I will remove this entirely if it doesn't work out
+        private DataGridCellInfo _cellInfo;
+        // The following are all the private variables needed to export the results to an Excel spreadsheet
         // WKFC workstation headers
         private readonly string[] headers =
         {
@@ -32,9 +35,11 @@ namespace ABBYY_XL_MVVM.Model
             "Heating Year", "Fire Alarm Type", "Burglar Alarm Type", "Sprinkler Alarm Type",
             "Sprinkler Wet/Dry", "Sprinkler Extent"
         };
+        // User desktop
         private readonly string userDesktop = $@"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}";
+        // Today's date
         private readonly string dateToday = DateTime.Now.ToString("MM-dd-yyyy");
-        private DataGridCellInfo _cellInfo;
+
 
         /// <summary>
         /// The control number of the submission to search for
@@ -162,6 +167,25 @@ namespace ABBYY_XL_MVVM.Model
                 string excelBookName = $"Control Number [{ControlNumber}] ({dateToday}).xlsx";
                 Byte[] sheetAsBinary = pkg.GetAsByteArray();
                 File.WriteAllBytes(Path.Combine(userDesktop, excelBookName), sheetAsBinary);
+            }
+        }
+
+        /// <summary>
+        /// Based on the City and State, acquires the county and populates the Protection Class Code box if empty
+        /// </summary>
+        public void PPCLookup()
+        {
+            /*
+             * Implementation:
+             * 
+             * For each row in the columns City and State:
+             *  Pass the city and state to google's geocoding api and retrieve the county
+             *  Take the county and query the PPC SQLite database for the corresponding PPC code
+             *  Take the PPC code and assign its value to the Protection Code column of the corresponding row
+             */
+            foreach (DataRow abbyyRow in ABBYYData.Rows)
+            {
+
             }
         }
 
