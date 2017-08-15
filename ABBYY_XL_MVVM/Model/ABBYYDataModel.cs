@@ -5,12 +5,16 @@ using System.IO;
 using OfficeOpenXml;
 using ABBYY_XL_MVVM.Components;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using System.Data.SQLite;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Net;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows; // MessageBox for debug purposes, remove when ready to go forward
+
 
 namespace ABBYY_XL_MVVM.Model
 {
@@ -21,6 +25,9 @@ namespace ABBYY_XL_MVVM.Model
         // I have this to try to get the cell row/col index on click for PPC lookup on a singular location
         // Possible that I will remove this entirely if it doesn't work out
         private DataGridCellInfo _cellInfo;
+        // The following are all the private variables needed for the PPC lookup
+        private readonly string requestUri = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=";
+        private readonly string apiKey = Properties.Resources.APIKey;
         // The following are all the private variables needed to export the results to an Excel spreadsheet
         // WKFC workstation headers
         private readonly string[] headers =
@@ -183,10 +190,65 @@ namespace ABBYY_XL_MVVM.Model
              *  Take the county and query the PPC SQLite database for the corresponding PPC code
              *  Take the PPC code and assign its value to the Protection Code column of the corresponding row
              */
+            string cityState = "";
+            string county = "";
             foreach (DataRow abbyyRow in ABBYYData.Rows)
             {
+                cityState = $"{abbyyRow["City"].ToString()}, {abbyyRow["State"].ToString()}";
+                //string url = $"{requestUri}{cityState}{apiKey}";
+                //using (WebClient webClient = new WebClient())
+                //{
+                //    var json = webClient.DownloadString(url);
+                //    JObject geocodeResults = JObject.Parse(json);
+                //    if ((string)geocodeResults["status"] != "OK")
+                //        county = "";
 
+                //    var countyFromJson = geocodeResults["results"][0]["address_components"]
+                //                        .Where(x => (string)x["types"] == "administrative_area_level_2")
+                //                        .Select(y => y["long_name"])
+                //                        .First()
+                //                        .ToString();
+                //}
+                //county = countyFromJson
             }
+        }
+
+        public string GetCountyFromGeocode(string cityState)
+        {
+            string county = "";
+            string url = $"{requestUri}{cityState}{apiKey}";
+            using (WebClient webClient = new WebClient())
+            {
+                var json = webClient.DownloadString(url);
+                JObject geocodeResults = JObject.Parse(json);
+                if ((string)geocodeResults["status"] != "OK")
+                    county = "";
+
+                county = geocodeResults["results"][0]["address_components"]
+                         .Where(x => (string)x["types"][0] == "administrative_area_level_2")
+                         .Select(y => y["long_name"])
+                         .FirstOrDefault()
+                         .ToString();
+            }
+            return county;
+        }
+
+        public string GetPPC(string city, string countyOrState)
+        {
+            string ppcCode = "";
+            string conn = Properties.Resources.ConnectString;
+            string cmd = $@"select code from ppcCodes where (Community like '{city}' and State like '{countyOrState}') or (Community like '{city}' and County like '{countyOrState}')";
+            using (SqlConnection connect = new SqlConnection(conn))
+            {
+                connect.Open();
+                SqlCommand sqlCmd = new SqlCommand(cmd, connect);
+                SqlDataReader readCodes = sqlCmd.ExecuteReader();
+                if (!readCodes.HasRows)
+                    ppcCode = "";
+                while (readCodes.Read())
+                    ppcCode = readCodes["Code"].ToString();
+            }
+            return ppcCode;
         }
 
         /// <summary>

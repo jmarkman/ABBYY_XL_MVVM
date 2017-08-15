@@ -61,6 +61,15 @@ namespace ABBYY_XL_MVVM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &amp;key=AIzaSyBQtBvfAe9i7p7SsMvKxppj7vgOXt1ZrO0.
+        /// </summary>
+        internal static string APIKey {
+            get {
+                return ResourceManager.GetString("APIKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to server=10.10.11.112;database=ABBYY_AppData;User id=svc-flexicap;Password=svcflex;connection timeout = 30.
         /// </summary>
         internal static string ConnectString {

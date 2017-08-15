@@ -37,7 +37,24 @@ namespace ABBYYXL_UnitTest
             model.FillABBYYDataGrid();
             var row = model.ABBYYData.Rows;
             var col = model.ABBYYData.Columns;
-            Assert.AreEqual("Farm to Market Road 482", row[0][col[4]]);
+            Assert.AreEqual("Farm to Market Road 482", row[0][4]);
+        }
+
+        [TestMethod]
+        public void TestGetCountyFromGeocode()
+        {
+            ABBYYDataModel model = new ABBYYDataModel();
+
+            string testCounty = model.GetCountyFromGeocode("Melville, NY");
+            Assert.AreEqual("Suffolk County", testCounty);
+        }
+
+        [TestMethod]
+        public void TestGetPPC()
+        {
+            ABBYYDataModel model = new ABBYYDataModel();
+            string ppc = model.GetPPC("Booth", "AL");
+            Assert.AreEqual("5", ppc);
         }
     }
 }

@@ -69,7 +69,7 @@ namespace ABBYY_XL_MVVM
         /// </summary>
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("ABBYY-XL for WKFC Underwriting Managers\n\nDeveloped by Alfred Long and Jonathan Markman\nIcons provided by Fatcow Web Hosting (https://www.fatcow.com/free-icons)", "About ABBYY-XL");
+            MessageBox.Show("ABBYY-XL for WKFC Underwriting Managers\n\nDeveloped by Alfred Long and Jonathan Markman\nIcons sourced from Fatcow Web Hosting (https://www.fatcow.com/free-icons)", "About ABBYY-XL");
         }
 
         /// <summary>

@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="APIKey" xml:space="preserve">
+    <value>&amp;key=AIzaSyBQtBvfAe9i7p7SsMvKxppj7vgOXt1ZrO0</value>
+    <comment>Google Geocoding API Key</comment>
+  </data>
   <data name="ConnectString" xml:space="preserve">
     <value>server=10.10.11.112;database=ABBYY_AppData;User id=svc-flexicap;Password=svcflex;connection timeout = 30</value>
     <comment>ABBYY DB connect string</comment>
