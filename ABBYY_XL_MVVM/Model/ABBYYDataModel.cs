@@ -6,12 +6,9 @@ using OfficeOpenXml;
 using ABBYY_XL_MVVM.Components;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using System.Data.SQLite;
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Net;
-using System.Globalization;
 using System.Windows.Controls;
 using System.Windows; // MessageBox for debug purposes, remove when ready to go forward
 
@@ -108,6 +105,8 @@ namespace ABBYY_XL_MVVM.Model
 
                 // Set the datatable equal to the Model's variable
                 ABBYYData = resultsDT;
+
+                ConstructionTypeMatchesWorkstation();
             }
         }
 
@@ -119,6 +118,8 @@ namespace ABBYY_XL_MVVM.Model
             // Layer of abstraction so I don't have to refer to ABBYYAppData.ABBYYData every time
             if (ABBYYData == null)
                 return;
+
+            // TODO: I might not even need the custom list implementation, but it can't hurt to have it?
 
             // Create a list of rows and declare a variable to hold a singular row
             List<WorkstationRow> allRows = new List<WorkstationRow>();
@@ -157,9 +158,9 @@ namespace ABBYY_XL_MVVM.Model
                 sheet.Name = "ABBYY Results";
 
                 // Write the headers to the excel sheet
-                for (int i = 0; i < headers.Length; i++)
+                for (int headerPosition = 0; headerPosition < headers.Length; headerPosition++)
                 {
-                    sheet.Cells[headerRow, i + 1].Value = headers[i];
+                    sheet.Cells[headerRow, headerPosition + 1].Value = headers[headerPosition];
                 }
 
                 // Write the actual data gleaned from the DataGrid and save it 
@@ -182,27 +183,28 @@ namespace ABBYY_XL_MVVM.Model
         /// </summary>
         public void PPCLookup()
         {
-            /*
-             * Implementation:
-             * 
-             * For each row in the columns City and State:
-             *  Pass the city and state to google's geocoding api and retrieve the county
-             *  Take the county and query the PPC SQLite database for the corresponding PPC code
-             *  Take the PPC code and assign its value to the Protection Code column of the corresponding row
-             */
             foreach (DataRow abbyyRow in ABBYYData.Rows)
             {
+                // Assign the city and county/state to appropriate variables
                 string city = abbyyRow["City"].ToString();
                 string community = (abbyyRow["County"].ToString().Equals("") ? abbyyRow["State"].ToString() : abbyyRow["County"].ToString());
 
+                // Set that row's Protection Code column to the results of the method, GetPPC()
                 abbyyRow["Protection Code"] = GetPPC(city, community);
             }
         }
 
+        /// <summary>
+        /// Based on the city-state combo, return the county of that city-state combo to the user
+        /// </summary>
+        /// <param name="cityState">The city and state of a given location as a string</param>
+        /// <returns>The county as a string</returns>
         public string GetCountyFromGeocode(string cityState)
         {
+            // Build storage variable and Geocode URL
             string county = "";
             string url = $"{requestUri}{cityState}{apiKey}";
+            // Based on the json returned, LINQ through it to find the appropriate county
             using (WebClient webClient = new WebClient())
             {
                 var json = webClient.DownloadString(url);
@@ -210,6 +212,15 @@ namespace ABBYY_XL_MVVM.Model
                 if ((string)geocodeResults["status"] != "OK")
                     county = "";
 
+                /*
+                 * Google's Geocode results are unnecessarily difficult to serialize to .NET objects because
+                 * 1. Not every piece of JSON returned has the same structure
+                 * 2. Copying and pasting the JSON as a class in VS creates a class with lots of little subclasses
+                 *    and arrays of those little subclasses
+                 * 
+                 * All we really need is to get the county from the results. Relevant results will always appear in the "results" json as the first item in the results array, and each relevant result will have an
+                 * array of "address components
+                 */ 
                 county = geocodeResults["results"][0]["address_components"]
                          .Where(x => (string)x["types"][0] == "administrative_area_level_2")
                          .Select(y => y["long_name"])
@@ -219,84 +230,70 @@ namespace ABBYY_XL_MVVM.Model
             return county;
         }
 
+        /// <summary>
+        /// Connects to the database to fetch the PPC code based on the provided city and community (state or county)
+        /// </summary>
+        /// <param name="city">The city value from the datatable</param>
+        /// <param name="community">The county or state from the datatable</param>
+        /// <returns>The PPC as a string</returns>
         public string GetPPC(string city, string community)
         {
-            string ppcCode = "";
+            string ppcCode = ""; // Variable to store the PPC code
             string conn = Properties.Resources.ConnectString;
-            string cmd = $@"select code from ppcCodes where (Community like '{city}' and State like '{community}') or (Community like '{city}' and County like '{community}')";
+            // Query for accessing the codes
+            string cmd = 
+                $@"select code from ppcCodes where (Community like '{city}' and State like '{community}') or (Community like '{city}' and County like '{community}')";
             using (SqlConnection connect = new SqlConnection(conn))
             {
                 connect.Open();
                 SqlCommand sqlCmd = new SqlCommand(cmd, connect);
                 SqlDataReader readCodes = sqlCmd.ExecuteReader();
+                // If there is no code available, skip this by setting the return value to a blank string
                 if (!readCodes.HasRows)
                     ppcCode = "";
                 while (readCodes.Read())
+                    // Set the variable equal to the value returned from the database 
                     ppcCode = readCodes["Code"].ToString();
             }
             return ppcCode;
         }
 
         /// <summary>
-        /// Writes out common address abbreviations in their full form.
+        /// Based on the construction type, append a number to the start of the construction type
+        /// string so that it matches the expected input for the workstation
         /// </summary>
-        // TODO: Test that the shorthand method behaves the way I think it will. 
-        public void ExpandShorthand()
+        public void ConstructionTypeMatchesWorkstation()
         {
-            // Establish dictionary of shorthand keys and their expanded values
-            Dictionary<string, string> shorthand = new Dictionary<string, string>()
+            // Assign numbers to construction types as they are on the workstation
+            Dictionary<string, string> workstationConstrType = new Dictionary<string, string>()
             {
-                { "ave", "Avenue" }, { "ave.", "Avenue" }, { "ave,", "Avenue," },
-                { "blvd", "Boulevard" }, { "blvd.", "Boulevard" }, { "blvd,", "Boulevard," },
-                { "blvd.,", "Boulevard,"}, { "rd", "Road" }, { "rd.", "Road" }, { "rd,", "Road," },
-                { "rd.,", "Road,"}, { "dr", "Drive" }, { "dr.", "Drive" }, { "dr,", "Drive," },
-                { "dr.,", "Drive,"}, { "ln", "Lane" }, { "ln.", "Lane" }, { "ln,", "Lane," },
-                { "ln.,", "Lane,"}
+                { "Frame", "1." },
+                { "Joisted Masonry", "2." },
+                { "Non-Combustible", "3." },
+                { "Masonry, Non-Combustible", "4." },
+                { "Modified Fire Resistive", "5." },
+                { "Fire Resistive", "6." }
             };
-            // Create a new instance of the TextInfo class, which is a child class of CultureInfo.
-            // This class instance will allow us to use the ToTitleCase method below.
-            TextInfo txt = new CultureInfo("en-US", false).TextInfo;
-            // Take the address, make it lowercase for identification, split the address up by spaces, and place the pieces in a list
-            foreach (DataRow item in ABBYYData.Rows)
+
+            // Iterate through the DataTable and perform the changes as necessary
+            foreach (DataRow abbyyRow in ABBYYData.Rows)
             {
-                // Take the address, make it lowercase for identification, split the address up by spaces, and place the pieces in a list
-                List<string> splitAddress = item["Street 1"].ToString().ToLower().Split(' ').ToList();
-                foreach (var kvp in shorthand)
+                // Abstract the value in the column so that we don't have to type out what's being assigned
+                // to this variable every time we want to access that value
+                string abbyyConstrTypeValue = abbyyRow["Construction Type"].ToString();
+
+                foreach (KeyValuePair<string, string> kvp in workstationConstrType)
                 {
-                    // If the shorthand from the dictionary exists in the address part list
-                    if (splitAddress.Contains(kvp.Key)) 
+                    if (abbyyConstrTypeValue.Equals(kvp.Key))
                     {
-                        // Find it and update it
-                        int pieceLocation = splitAddress.IndexOf(kvp.Key);
-                        splitAddress[pieceLocation] = kvp.Value;
+                        abbyyRow["Construction Type"] = $"{kvp.Value} {abbyyConstrTypeValue}";
                     }
-                    item["Street 1"] = txt.ToTitleCase(string.Join(" ", splitAddress));
+                    else if (abbyyConstrTypeValue.Equals("None Provided"))
+                    {
+                        abbyyRow["Construction Type"] = "";
+                    }
                 }
             }
-        }
-
-        /// <summary>
-        /// Expands the abbreviations for cardinal directions into their proper word form
-        /// </summary>
-        // TODO: Implement the cardinal direction method and test it
-        public void ExpandCardinalDirection()
-        {
-            /*
-             * Implementation:
-             * 
-             * For each row in the datatable
-             *  For each cardinal direction
-             *   If the text (converted to lowercase) in the Street 1 cell contains a full cardinal direction
-             *    The method doesn't need to do anything (set needsExpansion to false)
-             *    
-             * If !needsExpansion
-             *  return
-             * Else
-             *  Using regex, find the singular letter used to represent the cardinal direction
-             *  If the match is successful
-             *   Based on a switch statement that determines if the letter is at the end of the string or within
-             *   replace the letter with the full word
-             */ 
         }
 
         // Implementation of INotifyPropertyChanged interface

@@ -7,26 +7,30 @@ namespace ABBYYXL_UnitTest
     [TestClass]
     public class ModelUnitTest
     {
+        // No error should be thrown if the control number is null
         [TestMethod]
         public void TestFillABBYYDataGrid_ReturnIfNull()
         {
-            ABBYYDataModel testModel = new ABBYYDataModel()
+            ABBYYDataModel model = new ABBYYDataModel()
             {
                 ControlNumber = null
             };
-            testModel.FillABBYYDataGrid();
+            model.FillABBYYDataGrid();
         }
 
+        // No error shoul be thrown if the control number is an empty string
         [TestMethod]
         public void TestFillABBYYDataGrid_ReturnIfEmptyString()
         {
-            ABBYYDataModel testModel = new ABBYYDataModel()
+            ABBYYDataModel model = new ABBYYDataModel()
             {
                 ControlNumber = ""
             };
-            testModel.FillABBYYDataGrid();
+            model.FillABBYYDataGrid();
         }
 
+        // Prove that the grid is being filled
+        // We should be getting specific values back for this entry
         [TestMethod]
         public void TestFillABBYYDataGrid()
         {
@@ -35,11 +39,11 @@ namespace ABBYYXL_UnitTest
                 ControlNumber = "1191167"
             };
             model.FillABBYYDataGrid();
-            var row = model.ABBYYData.Rows;
-            var col = model.ABBYYData.Columns;
-            Assert.AreEqual("Farm to Market Road 482", row[0][4]);
+            var rows = model.ABBYYData.Rows;
+            Assert.AreEqual("Farm to Market Road 482", rows[0][4]);
         }
 
+        // Check that we're getting the county after all is said and done
         [TestMethod]
         public void TestGetCountyFromGeocode()
         {
@@ -49,6 +53,7 @@ namespace ABBYYXL_UnitTest
             Assert.AreEqual("Suffolk County", testCounty);
         }
 
+        // Check that the method GetPPC is fetching the PPC from the database
         [TestMethod]
         public void TestGetPPC()
         {

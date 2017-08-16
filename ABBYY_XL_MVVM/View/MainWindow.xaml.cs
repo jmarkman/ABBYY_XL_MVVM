@@ -49,10 +49,12 @@ namespace ABBYY_XL_MVVM
             if (SearchResults.IsReadOnly == true)
             {
                 SearchResults.IsReadOnly = false;
+                PPC.IsEnabled = true;
             }
             else
             {
                 SearchResults.IsReadOnly = true;
+                PPC.IsEnabled = false;
             }
         }
 
@@ -80,6 +82,9 @@ namespace ABBYY_XL_MVVM
             _viewModel.ExportABBYYDataGrid();
         }
 
+        /// <summary>
+        /// Fills in all Protection Class rows based on results from the database
+        /// </summary>
         private void PPC_Click(object sender, RoutedEventArgs e)
         {
             _viewModel.PPCLookup();
