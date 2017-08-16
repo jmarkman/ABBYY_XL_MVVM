@@ -215,11 +215,9 @@ namespace ABBYY_XL_MVVM.Model
                 /*
                  * Google's Geocode results are unnecessarily difficult to serialize to .NET objects because
                  * 1. Not every piece of JSON returned has the same structure
-                 * 2. Copying and pasting the JSON as a class in VS creates a class with lots of little subclasses
-                 *    and arrays of those little subclasses
+                 * 2. Copying and pasting the JSON as a class in VS creates a class with lots of little subclasses and arrays of those little subclasses
                  * 
-                 * All we really need is to get the county from the results. Relevant results will always appear in the "results" json as the first item in the results array, and each relevant result will have an
-                 * array of "address components
+                 * All we really need is to get the county from the results. Relevant results will always appear in the "results" json as the first item in the results array, and each relevant result will have an array of "address components"
                  */ 
                 county = geocodeResults["results"][0]["address_components"]
                          .Where(x => (string)x["types"][0] == "administrative_area_level_2")
