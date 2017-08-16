@@ -190,26 +190,12 @@ namespace ABBYY_XL_MVVM.Model
              *  Take the county and query the PPC SQLite database for the corresponding PPC code
              *  Take the PPC code and assign its value to the Protection Code column of the corresponding row
              */
-            string cityState = "";
-            string county = "";
             foreach (DataRow abbyyRow in ABBYYData.Rows)
             {
-                cityState = $"{abbyyRow["City"].ToString()}, {abbyyRow["State"].ToString()}";
-                //string url = $"{requestUri}{cityState}{apiKey}";
-                //using (WebClient webClient = new WebClient())
-                //{
-                //    var json = webClient.DownloadString(url);
-                //    JObject geocodeResults = JObject.Parse(json);
-                //    if ((string)geocodeResults["status"] != "OK")
-                //        county = "";
+                string city = abbyyRow["City"].ToString();
+                string community = (abbyyRow["County"].ToString().Equals("") ? abbyyRow["State"].ToString() : abbyyRow["County"].ToString());
 
-                //    var countyFromJson = geocodeResults["results"][0]["address_components"]
-                //                        .Where(x => (string)x["types"] == "administrative_area_level_2")
-                //                        .Select(y => y["long_name"])
-                //                        .First()
-                //                        .ToString();
-                //}
-                //county = countyFromJson
+                abbyyRow["Protection Code"] = GetPPC(city, community);
             }
         }
 
@@ -233,11 +219,11 @@ namespace ABBYY_XL_MVVM.Model
             return county;
         }
 
-        public string GetPPC(string city, string countyOrState)
+        public string GetPPC(string city, string community)
         {
             string ppcCode = "";
             string conn = Properties.Resources.ConnectString;
-            string cmd = $@"select code from ppcCodes where (Community like '{city}' and State like '{countyOrState}') or (Community like '{city}' and County like '{countyOrState}')";
+            string cmd = $@"select code from ppcCodes where (Community like '{city}' and State like '{community}') or (Community like '{city}' and County like '{community}')";
             using (SqlConnection connect = new SqlConnection(conn))
             {
                 connect.Open();

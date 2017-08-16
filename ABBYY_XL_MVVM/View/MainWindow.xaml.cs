@@ -79,5 +79,10 @@ namespace ABBYY_XL_MVVM
         {
             _viewModel.ExportABBYYDataGrid();
         }
+
+        private void PPC_Click(object sender, RoutedEventArgs e)
+        {
+            _viewModel.PPCLookup();
+        }
     }
 }

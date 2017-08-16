@@ -28,5 +28,10 @@ namespace ABBYY_XL_MVVM.ViewModel
         {
             ABBYYAppData.ExportABBYYDataGrid();
         }
+
+        public void PPCLookup()
+        {
+            ABBYYAppData.PPCLookup();
+        }
     }
 }

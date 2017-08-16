@@ -73,6 +73,12 @@
                     <TextBlock Text="Export" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="3 0 0 0"/>
                 </StackPanel>
             </Button>
+            <Button x:Name="PPC" Background="White" BorderBrush="White" Click="PPC_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="F:\Programming\Work\OfficeLikeIcons\16x16\search_plus.png"/>
+                    <TextBlock Text="PPC Lookup" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="3 0 0 0"/>
+                </StackPanel>
+            </Button>
         </StackPanel>
 
         <Button x:Name="About" Grid.Column="5" Grid.Row="0" Width="20" HorizontalAlignment="Right" Click="About_Click">
