@@ -1,4 +1,6 @@
-﻿using ABBYY_XL_MVVM.Model;
+﻿using System.Windows;
+using System.Windows.Controls;
+using ABBYY_XL_MVVM.Model;
 
 namespace ABBYY_XL_MVVM.ViewModel
 {
@@ -27,11 +29,23 @@ namespace ABBYY_XL_MVVM.ViewModel
         public void ExportABBYYDataGrid()
         {
             ABBYYAppData.ExportABBYYDataGrid();
+            MessageBox.Show("The file has been exported to you desktop", "Export Complete");
         }
 
         public void PPCLookup()
         {
             ABBYYAppData.PPCLookup();
+        }
+
+        // See TODO in ABBYYDataModel
+        //public void DeleteRow(DataGridRowEventArgs eventArgs)
+        //{
+        //    ABBYYAppData.DeleteRow(eventArgs);
+        //}
+
+        public void About()
+        {
+            MessageBox.Show("ABBYY-XL for WKFC Underwriting Managers\n\nDeveloped by Alfred Long and Jonathan Markman\nIcons sourced from Fatcow Web Hosting (https://www.fatcow.com/free-icons)", "About ABBYY-XL");
         }
     }
 }

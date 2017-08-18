@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ABBYY_XL_MVVM"
         mc:Ignorable="d"
-        Title="ABBYY-XL" Icon="F:\Programming\Work\OfficeLikeIcons\16x16\report.png" Height="350" Width="1025">
+        Title="ABBYY-XL" Icon="/Images/report.png" Height="350" Width="1025">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -28,9 +28,11 @@
                   IsReadOnly="True"
                   ItemsSource="{Binding ABBYYAppData.ABBYYData, Mode=TwoWay}"
                   FrozenColumnCount="2" 
-                  CurrentCell="{Binding ABBYYAppData.CellInfo, Mode=TwoWay}"
+                  SelectionMode="Extended"
                   SelectionUnit="CellOrRowHeader" 
                   CanUserReorderColumns="False"/>
+                  <!--CurrentCell="{Binding ABBYYAppData.CellInfo, Mode=TwoWay}"-->
+
 
         <TextBlock x:Name="CtrlNumLbl"
                    Grid.Column="0"
@@ -63,26 +65,34 @@
             </StackPanel.Resources>
             <Button x:Name="Edit" Click="Edit_Click" Background="White" BorderBrush="White">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="F:\Programming\Work\OfficeLikeIcons\16x16\pencil.png"/>
+                    <Image Source="/Images/pencil.png"/>
                     <TextBlock Text="Edit" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="3 0 0 0"/>
                 </StackPanel>
             </Button>
             <Button x:Name="Export" Background="White" BorderBrush="White" Click="Export_Click">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="F:\Programming\Work\OfficeLikeIcons\16x16\export_excel.png"/>
+                    <Image Source="/Images/export_excel.png"/>
                     <TextBlock Text="Export" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="3 0 0 0"/>
                 </StackPanel>
             </Button>
-            <Button x:Name="PPC" Background="White" BorderBrush="White" Click="PPC_Click" IsEnabled="False">
+            <Button x:Name="ProtCode" Background="White" BorderBrush="White" Click="PPC_Click" IsEnabled="False">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="F:\Programming\Work\OfficeLikeIcons\16x16\search_plus.png"/>
+                    <Image Source="/Images/search_plus.png"/>
                     <TextBlock Text="PPC Lookup" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="3 0 0 0"/>
                 </StackPanel>
             </Button>
         </StackPanel>
+        
+        <!--Button for deleting row, hold here temporarily-->
+        <!--<Button x:Name="DeleteRow" Background="White" BorderBrush="White" Click="DeleteRow_Click" IsEnabled="False">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/Images/delete.png"/>
+                <TextBlock Text="Delete Row" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="3 0 0 0"/>
+            </StackPanel>
+        </Button>-->
 
         <Button x:Name="About" Grid.Column="5" Grid.Row="0" Width="20" HorizontalAlignment="Right" Click="About_Click">
-            <Image Source="F:\Programming\Work\OfficeLikeIcons\16x16\help.png"/>
+            <Image Source="/Images/help.png"/>
         </Button>
     </Grid>
 </Window>

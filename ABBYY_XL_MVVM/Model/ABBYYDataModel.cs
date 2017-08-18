@@ -21,13 +21,12 @@ namespace ABBYY_XL_MVVM.Model
         private DataTable _abbyyData; // Data associated with the submission
         // I have this to try to get the cell row/col index on click for PPC lookup on a singular location
         // Possible that I will remove this entirely if it doesn't work out
-        private DataGridCellInfo _cellInfo;
         // The following are all the private variables needed for the PPC lookup
-        private readonly string requestUri = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=";
-        private readonly string apiKey = Properties.Resources.APIKey;
+        private readonly string _requestUri = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=";
+        private readonly string _apiKey = Properties.Resources.APIKey;
         // The following are all the private variables needed to export the results to an Excel spreadsheet
         // WKFC workstation headers
-        private readonly string[] headers =
+        private readonly string[] _headers =
         {
             "Loc #", "Bldg #", "Physical Building #", "Single Physical Building #",
             "Street 1", "Street 2", "City", "State", "Zip", "County", "Building Value",
@@ -40,9 +39,9 @@ namespace ABBYY_XL_MVVM.Model
             "Sprinkler Wet/Dry", "Sprinkler Extent"
         };
         // User desktop
-        private readonly string userDesktop = $@"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}";
+        private readonly string _userDesktop = $@"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}";
         // Today's date
-        private readonly string dateToday = DateTime.Now.ToString("MM-dd-yyyy");
+        private readonly string _dateToday = DateTime.Now.ToString("MM-dd-yyyy");
 
 
         /// <summary>
@@ -71,17 +70,18 @@ namespace ABBYY_XL_MVVM.Model
             }
         }
 
-        public DataGridCellInfo CellInfo
-        {
-            get { return _cellInfo; }
-            set
-            {
-                _cellInfo = value;
-                OnPropertyChanged(nameof(CellInfo));
-                // Debug to see if it works
-                MessageBox.Show($"Col Index: {_cellInfo.Column.DisplayIndex.ToString()}");
-            }
-        }
+        // Comment out until ready to actually utilize this
+        //public DataGridCellInfo CellInfo
+        //{
+        //    get { return _cellInfo; }
+        //    set
+        //    {
+        //        _cellInfo = value;
+        //        OnPropertyChanged(nameof(CellInfo));
+        //        // Debug to see if it works
+        //        MessageBox.Show($"Col Index: {_cellInfo.Column.DisplayIndex.ToString()}");
+        //    }
+        //}
 
         /// <summary>
         /// Queries the WKFC ABBYY database and uses SqlDataAdapter to fill ABBYYData (a DataTable object)
@@ -137,11 +137,11 @@ namespace ABBYY_XL_MVVM.Model
             }
 
             // Create excel file for results, and if that file already exists, delete it and remake it
-            FileInfo excelFile = new FileInfo(userDesktop + $"Control Number [{ControlNumber}] ({dateToday})");
+            FileInfo excelFile = new FileInfo(_userDesktop + $"Control Number [{ControlNumber}] ({_dateToday})");
             if (excelFile.Exists)
             {
                 excelFile.Delete();
-                excelFile = new FileInfo(userDesktop + $"Control Number [{ControlNumber}] ({dateToday})");
+                excelFile = new FileInfo(_userDesktop + $"Control Number [{ControlNumber}] ({_dateToday})");
             }
 
             using (ExcelPackage pkg = new ExcelPackage())
@@ -158,9 +158,9 @@ namespace ABBYY_XL_MVVM.Model
                 sheet.Name = "ABBYY Results";
 
                 // Write the headers to the excel sheet
-                for (int headerPosition = 0; headerPosition < headers.Length; headerPosition++)
+                for (int headerPosition = 0; headerPosition < _headers.Length; headerPosition++)
                 {
-                    sheet.Cells[headerRow, headerPosition + 1].Value = headers[headerPosition];
+                    sheet.Cells[headerRow, headerPosition + 1].Value = _headers[headerPosition];
                 }
 
                 // Write the actual data gleaned from the DataGrid and save it 
@@ -172,9 +172,9 @@ namespace ABBYY_XL_MVVM.Model
                     }
                     dataRowStart++;
                 }
-                string excelBookName = $"Control Number [{ControlNumber}] ({dateToday}).xlsx";
+                string excelBookName = $"Control Number [{ControlNumber}] ({_dateToday}).xlsx";
                 Byte[] sheetAsBinary = pkg.GetAsByteArray();
-                File.WriteAllBytes(Path.Combine(userDesktop, excelBookName), sheetAsBinary);
+                File.WriteAllBytes(Path.Combine(_userDesktop, excelBookName), sheetAsBinary);
             }
         }
 
@@ -203,7 +203,7 @@ namespace ABBYY_XL_MVVM.Model
         {
             // Build storage variable and Geocode URL
             string county = "";
-            string url = $"{requestUri}{cityState}{apiKey}";
+            string url = $"{_requestUri}{cityState}{_apiKey}";
             // Based on the json returned, LINQ through it to find the appropriate county
             using (WebClient webClient = new WebClient())
             {
@@ -293,6 +293,12 @@ namespace ABBYY_XL_MVVM.Model
                 }
             }
         }
+
+        // TODO: Implement row deletion option or row select to let user hit "delete" key to delete
+        //public void DeleteRow(DataGridRowEventArgs eventArgs)
+        //{
+        //    ABBYYData.Rows.RemoveAt(eventArgs.Row.GetIndex());
+        //}
 
         // Implementation of INotifyPropertyChanged interface
         public event PropertyChangedEventHandler PropertyChanged;

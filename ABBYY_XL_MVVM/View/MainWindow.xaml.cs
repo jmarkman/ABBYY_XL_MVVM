@@ -49,12 +49,12 @@ namespace ABBYY_XL_MVVM
             if (SearchResults.IsReadOnly == true)
             {
                 SearchResults.IsReadOnly = false;
-                PPC.IsEnabled = true;
+                ProtCode.IsEnabled = true;
             }
             else
             {
                 SearchResults.IsReadOnly = true;
-                PPC.IsEnabled = false;
+                ProtCode.IsEnabled = false;
             }
         }
 
@@ -71,7 +71,7 @@ namespace ABBYY_XL_MVVM
         /// </summary>
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("ABBYY-XL for WKFC Underwriting Managers\n\nDeveloped by Alfred Long and Jonathan Markman\nIcons sourced from Fatcow Web Hosting (https://www.fatcow.com/free-icons)", "About ABBYY-XL");
+            _viewModel.About();
         }
 
         /// <summary>
@@ -89,5 +89,11 @@ namespace ABBYY_XL_MVVM
         {
             _viewModel.PPCLookup();
         }
+
+        // See TODO in ABBYYDataModel
+        //private void DeleteRow_Click(object sender, RoutedEventArgs e)
+        //{
+        //    //_viewModel.DeleteRow();
+        //}
     }
 }
