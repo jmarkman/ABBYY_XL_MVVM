@@ -240,7 +240,7 @@ namespace ABBYY_XL_MVVM.Model
             string conn = Properties.Resources.ConnectString;
             // Query for accessing the codes
             string cmd = 
-                $@"select code from ppcCodes where (Community like '{city}' and State like '{community}') or (Community like '{city}' and County like '{community}')";
+                $@"select Code from PPCData where (Community like '{city}' and State like '{community}') or (Community like '{city}' and County like '{community}')";
             using (SqlConnection connect = new SqlConnection(conn))
             {
                 connect.Open();
@@ -251,7 +251,7 @@ namespace ABBYY_XL_MVVM.Model
                     ppcCode = "";
                 while (readCodes.Read())
                     // Set the variable equal to the value returned from the database 
-                    ppcCode = readCodes["Code"].ToString();
+                    ppcCode = readCodes["code"].ToString();
             }
             return ppcCode;
         }
