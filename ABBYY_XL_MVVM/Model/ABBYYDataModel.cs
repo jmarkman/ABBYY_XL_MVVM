@@ -21,6 +21,7 @@ namespace ABBYY_XL_MVVM.Model
         private DataTable _abbyyData; // Data associated with the submission
         // I have this to try to get the cell row/col index on click for PPC lookup on a singular location
         // Possible that I will remove this entirely if it doesn't work out
+        // private DataGridCellInfo _cellInfo;
         // The following are all the private variables needed for the PPC lookup
         private readonly string _requestUri = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=";
         private readonly string _apiKey = Properties.Resources.APIKey;
@@ -115,7 +116,6 @@ namespace ABBYY_XL_MVVM.Model
         /// </summary>
         public void ExportABBYYDataGrid()
         {
-            // Layer of abstraction so I don't have to refer to ABBYYAppData.ABBYYData every time
             if (ABBYYData == null)
                 return;
 
@@ -190,7 +190,10 @@ namespace ABBYY_XL_MVVM.Model
                 string community = (abbyyRow["County"].ToString().Equals("") ? abbyyRow["State"].ToString() : abbyyRow["County"].ToString());
 
                 // Set that row's Protection Code column to the results of the method, GetPPC()
-                abbyyRow["Protection Code"] = GetPPC(city, community);
+                if (string.IsNullOrEmpty(abbyyRow["Protection Code"].ToString()))
+                {
+                    abbyyRow["Protection Code"] = GetPPC(city, community);
+                }
             }
         }
 

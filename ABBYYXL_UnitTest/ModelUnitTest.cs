@@ -61,5 +61,27 @@ namespace ABBYYXL_UnitTest
             string ppc = model.GetPPC("Booth", "AL");
             Assert.AreEqual("5", ppc);
         }
+
+        [TestMethod]
+        public void TestIfGetPPCSkipsCellsWithContent()
+        {
+            /*
+             * The control number 1193093 has almost all of its locations in PA, 
+             * with the county being Berks. The PPC for Berks County is 4.
+             * If we manually assign the PPC for row 1 as 5, the method should 
+             * skip over it since that cell has content and assign the appropriate
+             * value in the PPC column for the following row.
+             */
+            ABBYYDataModel model = new ABBYYDataModel
+            {
+                ControlNumber = "1193093"
+            };
+            model.FillABBYYDataGrid();
+            var rows = model.ABBYYData.Rows;
+            rows[0]["Protection Code"] = "5";
+            model.PPCLookup();
+            Assert.AreEqual("5", rows[0]["Protection Code"].ToString());
+            Assert.AreEqual("4", rows[1]["Protection Code"].ToString());
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using ABBYY_XL_MVVM.Model;
+using System.Threading;
 
 namespace ABBYY_XL_MVVM.ViewModel
 {
@@ -34,7 +35,8 @@ namespace ABBYY_XL_MVVM.ViewModel
 
         public void PPCLookup()
         {
-            ABBYYAppData.PPCLookup();
+            Thread thread = new Thread(ABBYYAppData.PPCLookup);
+            thread.Start();
         }
 
         // See TODO in ABBYYDataModel
