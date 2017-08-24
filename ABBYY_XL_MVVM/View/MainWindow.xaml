@@ -30,7 +30,7 @@
                   FrozenColumnCount="2" 
                   SelectionMode="Extended"
                   SelectionUnit="CellOrRowHeader" 
-                  CanUserReorderColumns="False"/>
+                  CanUserReorderColumns="False" RowHeaderWidth="25" RowHeight="30"/>
                   <!--CurrentCell="{Binding ABBYYAppData.CellInfo, Mode=TwoWay}"-->
 
 
