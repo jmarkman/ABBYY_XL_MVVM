@@ -27,7 +27,7 @@
                   Grid.ColumnSpan="10"
                   IsReadOnly="True"
                   ItemsSource="{Binding ABBYYAppData.ABBYYData, Mode=TwoWay}"
-                  FrozenColumnCount="2" 
+                  FrozenColumnCount="2"
                   SelectionMode="Extended"
                   SelectionUnit="CellOrRowHeader" 
                   CanUserReorderColumns="False"/>

@@ -32,8 +32,8 @@ namespace ABBYY_XL_MVVM.Model
             "Loc #", "Bldg #", "Physical Building #", "Single Physical Building #",
             "Street 1", "Street 2", "City", "State", "Zip", "County", "Building Value",
             "Business Personal Property", "Busines Income", "Misc Real Property",
-            "TIV", "# Units", "Building Description", "WKFC Major Occupancy", "WKFC Detailed Occupancy", "LRO",
-            "ClassCodeDesc", "Building Usage", "Construction Type", "Dist. To Fire Hydrant (Feet)",
+            "TIV", "# Units", "Building Description", "WKFC Major Occupancy", "WKFC Detailed Occupancy",
+            "LRO", "ClassCodeDesc", "Building Usage", "Construction Type", "Dist. To Fire Hydrant (Feet)",
             "Dist. To Fire Station (Miles)", "Prot Class", "# Stories", "# Basements",
             "Year Built", "Sq Ftg", "Wiring Year", "Plumbing Year", "Roofing Year",
             "Heating Year", "Fire Alarm Type", "Burglar Alarm Type", "Sprinkler Alarm Type",
@@ -43,7 +43,6 @@ namespace ABBYY_XL_MVVM.Model
         private readonly string _userDesktop = $@"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}";
         // Today's date
         private readonly string _dateToday = DateTime.Now.ToString("MM-dd-yyyy");
-
 
         /// <summary>
         /// The control number of the submission to search for
@@ -80,7 +79,7 @@ namespace ABBYY_XL_MVVM.Model
         //        _cellInfo = value;
         //        OnPropertyChanged(nameof(CellInfo));
         //        // Debug to see if it works
-        //        MessageBox.Show($"Col Index: {_cellInfo.Column.DisplayIndex.ToString()}");
+        //        //MessageBox.Show($"Col Index: {_cellInfo.Column.DisplayIndex.ToString()}");
         //    }
         //}
 
@@ -179,7 +178,7 @@ namespace ABBYY_XL_MVVM.Model
         }
 
         /// <summary>
-        /// Based on the City and State, acquires the county and populates the Protection Class Code box if empty
+        /// Based on the City and State, acquires the county
         /// </summary>
         public void PPCLookup()
         {

@@ -35,6 +35,17 @@ namespace ABBYY_XL_MVVM.ViewModel
 
         public void PPCLookup()
         {
+            /*
+             * Forseen bug:
+             * If the user, for some reason, makes a new search as the method is active,
+             * the method keeps running because of the nature of threads. What results is the
+             * population of the new search's PPC column with the PPC lookup for the previous
+             * search that was currently running. If the search left off at row 4, the lookup
+             * will start inserting at row 5 when the new results return. This is probably a
+             * great place for a critical error if the new search returns fewer rows than the 
+             * previous (i.e., the previous search had 10 rows and the new one has 3, and the
+             * previous PPC lookup left off at row 5)
+             */
             Thread thread = new Thread(ABBYYAppData.PPCLookup);
             thread.Start();
         }
